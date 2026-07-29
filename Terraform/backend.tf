@@ -1,5 +1,5 @@
-# Bootstrap this ONCE before using any environment backend:
-# terraform -chdir=terraform/bootstrap apply
+# Bootstrap this ONCE per AWS account before using any environment backend:
+# terraform -chdir=Terraform init && terraform -chdir=Terraform apply
 
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "eks-platform-terraform-state-${data.aws_caller_identity.current.account_id}"
@@ -49,4 +49,4 @@ resource "aws_dynamodb_table" "terraform_locks" {
 data "aws_caller_identity" "current" {}
 
 output "state_bucket_name" { value = aws_s3_bucket.terraform_state.id }
-output "lock_table_name"   { value = aws_dynamodb_table.terraform_locks.name }
+output "lock_table_name" { value = aws_dynamodb_table.terraform_locks.name }

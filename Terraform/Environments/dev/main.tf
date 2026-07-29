@@ -1,11 +1,11 @@
 terraform {
   required_version = ">= 1.6.0"
   #backend "s3" {
-   # bucket         = "your-terraform-state-bucket"
-   # key            = "dev/eks-platform/terraform.tfstate"
-   # region         = "ap-south-1"
-   # dynamodb_table = "terraform-state-lock"
-   # encrypt        = true
+  # bucket         = "your-terraform-state-bucket"
+  # key            = "dev/eks-platform/terraform.tfstate"
+  # region         = "ap-south-1"
+  # dynamodb_table = "terraform-state-lock"
+  # encrypt        = true
   #}
   required_providers {
     aws = {
@@ -28,7 +28,7 @@ provider "aws" {
 }
 
 module "vpc" {
-  source               = "../../modules/vpc"
+  source               = "../../Modules/vpc"
   project_name         = var.project_name
   cluster_name         = local.cluster_name
   vpc_cidr             = "10.0.0.0/16"
@@ -38,7 +38,7 @@ module "vpc" {
 }
 
 module "eks" {
-  source              = "../../modules/eks"
+  source              = "../../Modules/eks"
   cluster_name        = local.cluster_name
   kubernetes_version  = "1.30"
   private_subnet_ids  = module.vpc.private_subnet_ids

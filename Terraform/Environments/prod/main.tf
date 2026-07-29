@@ -25,7 +25,7 @@ provider "aws" {
 }
 
 module "vpc" {
-  source               = "../../modules/vpc"
+  source               = "../../Modules/vpc"
   project_name         = var.project_name
   cluster_name         = local.cluster_name
   vpc_cidr             = "10.1.0.0/16"
@@ -35,7 +35,7 @@ module "vpc" {
 }
 
 module "eks" {
-  source              = "../../modules/eks"
+  source              = "../../Modules/eks"
   cluster_name        = local.cluster_name
   kubernetes_version  = "1.30"
   private_subnet_ids  = module.vpc.private_subnet_ids
@@ -46,10 +46,10 @@ module "eks" {
 }
 
 module "iam" {
-  source             = "../../modules/iam"
-  cluster_name       = local.cluster_name
-  oidc_provider_arn  = module.eks.oidc_provider_arn
-  oidc_provider_url  = module.eks.oidc_provider_url
+  source            = "../../Modules/iam"
+  cluster_name      = local.cluster_name
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  oidc_provider_url = module.eks.oidc_provider_url
 }
 
 # S3 bucket for backups
@@ -78,6 +78,6 @@ locals {
   cluster_name = "${var.project_name}-${var.environment}"
 }
 
-output "cluster_name"         { value = module.eks.cluster_name }
-output "cluster_endpoint"     { value = module.eks.cluster_endpoint }
-output "alb_controller_role"  { value = module.iam.alb_controller_role_arn }
+output "cluster_name" { value = module.eks.cluster_name }
+output "cluster_endpoint" { value = module.eks.cluster_endpoint }
+output "alb_controller_role" { value = module.iam.alb_controller_role_arn }
