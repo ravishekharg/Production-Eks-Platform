@@ -1,7 +1,24 @@
 .terraform/
 *.tfstate
 *.tfstate.*
+*.tfstate.backup
 .terraform.lock.hcl
 *.tfvars
+!*.tfvars.example
 .venv/
 .vscode/
+
+# Secrets / credentials
+.env
+.env.*
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+kubeconfig
+kubeconfig.*
+*.kubeconfig
+crash.log
+
+# Local script output
+cost_report.json
