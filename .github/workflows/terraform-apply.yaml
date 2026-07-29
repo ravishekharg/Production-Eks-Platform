@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'terraform/**'
+      - 'Terraform/**'
 
 permissions:
   id-token: write
@@ -38,11 +38,11 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: terraform/environments/${{ env.ENVIRONMENT }}
+        working-directory: Terraform/Environments/${{ env.ENVIRONMENT }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        working-directory: terraform/environments/${{ env.ENVIRONMENT }}
+        working-directory: Terraform/Environments/${{ env.ENVIRONMENT }}
 
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name eks-platform-dev

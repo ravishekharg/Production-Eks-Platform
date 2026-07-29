@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'terraform/**'
+      - 'Terraform/**'
 
 permissions:
   id-token: write
@@ -38,15 +38,15 @@ jobs:
 
       - name: Terraform Format Check
         run: terraform fmt -check -recursive
-        working-directory: terraform
+        working-directory: Terraform
 
       - name: Terraform Init
         run: terraform init
-        working-directory: terraform/environments/${{ env.ENVIRONMENT }}
+        working-directory: Terraform/Environments/${{ env.ENVIRONMENT }}
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: terraform/environments/${{ env.ENVIRONMENT }}
+        working-directory: Terraform/Environments/${{ env.ENVIRONMENT }}
 
       - name: Install tflint
         run: |
@@ -54,19 +54,19 @@ jobs:
 
       - name: Run tflint
         run: tflint --recursive
-        working-directory: terraform
+        working-directory: Terraform
 
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color -out=tfplan 2>&1 | tee plan_output.txt
-        working-directory: terraform/environments/${{ env.ENVIRONMENT }}
+        working-directory: Terraform/Environments/${{ env.ENVIRONMENT }}
 
       - name: Post Plan to PR
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            const plan = fs.readFileSync('terraform/environments/${{ env.ENVIRONMENT }}/plan_output.txt', 'utf8');
+            const plan = fs.readFileSync('Terraform/Environments/${{ env.ENVIRONMENT }}/plan_output.txt', 'utf8');
             const maxLength = 65000;
             const truncated = plan.length > maxLength ? plan.substring(0, maxLength) + '\n... truncated' : plan;
             github.rest.issues.createComment({

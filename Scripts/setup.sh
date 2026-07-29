@@ -19,7 +19,7 @@ kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -
 
 # Apply ArgoCD Applications
 echo "[3/5] Applying ArgoCD Applications..."
-kubectl apply -f kubernetes/argocd/applications/
+kubectl apply -f Kubernetes/argocd/applications/
 
 # Install Metrics Server
 echo "[4/5] Installing Metrics Server..."
