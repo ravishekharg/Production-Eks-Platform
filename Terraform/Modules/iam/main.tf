@@ -12,7 +12,7 @@ resource "aws_iam_role" "alb_controller" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Effect = "Allow"
+      Effect    = "Allow"
       Principal = { Federated = var.oidc_provider_arn }
       Action    = "sts:AssumeRoleWithWebIdentity"
       Condition = {
@@ -41,7 +41,7 @@ resource "aws_iam_role" "cluster_autoscaler" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Effect = "Allow"
+      Effect    = "Allow"
       Principal = { Federated = var.oidc_provider_arn }
       Action    = "sts:AssumeRoleWithWebIdentity"
       Condition = {
@@ -94,7 +94,7 @@ resource "aws_iam_role" "external_dns" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Effect = "Allow"
+      Effect    = "Allow"
       Principal = { Federated = var.oidc_provider_arn }
       Action    = "sts:AssumeRoleWithWebIdentity"
       Condition = {
