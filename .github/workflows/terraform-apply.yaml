@@ -12,14 +12,26 @@ permissions:
 
 env:
   TF_VERSION: "1.7.0"
-  AWS_REGION:  "ap-south-1"
-  ENVIRONMENT: "dev"
+  AWS_REGION: "ap-south-1"
 
 jobs:
   apply:
-    name: Terraform Apply
+    name: Terraform Apply (${{ matrix.environment }})
     runs-on: ubuntu-latest
-    environment: dev
+    # `environment: ${{ matrix.environment }}` resolves environment-scoped
+    # secrets (e.g. AWS_ROLE_ARN) automatically, and — if required reviewers
+    # are configured on the "prod" environment under Settings > Environments —
+    # pauses this job for manual approval before applying to prod.
+    environment: ${{ matrix.environment }}
+    concurrency:
+      group: terraform-apply-${{ matrix.environment }}
+      cancel-in-progress: false
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        environment: [dev, prod]
 
     steps:
       - name: Checkout
@@ -36,16 +48,28 @@ jobs:
         with:
           terraform_version: ${{ env.TF_VERSION }}
 
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+        working-directory: Terraform
+
       - name: Terraform Init
         run: terraform init
-        working-directory: Terraform/Environments/${{ env.ENVIRONMENT }}
+        working-directory: Terraform/Environments/${{ matrix.environment }}
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: Terraform/Environments/${{ matrix.environment }}
+
+      - name: Terraform Plan
+        run: terraform plan -no-color -out=tfplan
+        working-directory: Terraform/Environments/${{ matrix.environment }}
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
-        working-directory: Terraform/Environments/${{ env.ENVIRONMENT }}
+        run: terraform apply tfplan
+        working-directory: Terraform/Environments/${{ matrix.environment }}
 
       - name: Update kubeconfig
-        run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name eks-platform-dev
+        run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name eks-platform-${{ matrix.environment }}
 
       - name: Verify cluster
         run: kubectl get nodes
