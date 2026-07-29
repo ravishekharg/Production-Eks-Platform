@@ -32,6 +32,10 @@ spec:
         - name: sample-app
           image: your-ecr-repo/sample-app:latest
           imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
           ports:
             - containerPort: 8080
           env:
